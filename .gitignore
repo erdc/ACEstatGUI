@@ -1,0 +1,8 @@
+build
+dist
+__pycache__
+MANIFEST
+cmd.bat
+/venv
+*.ini
+*.json

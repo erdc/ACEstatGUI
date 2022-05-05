@@ -1,0 +1,6 @@
+#acestatpy==2022.4.28.1 # Must be installed from file
+matplotlib==3.5.1
+PyQt5==5.15.6
+pyqtgraph==0.12.3
+#PyQt6==6.0.3
+#PySide6==6.0.3
