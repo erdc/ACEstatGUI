@@ -4,6 +4,7 @@ from .GroupComboBox import GroupComboBox
 from . import Images
 from .PlotCanvas import PlotCanvas
 from .FuncComboBox import FuncComboBox
+from .NumberSpinBox import NumberSpinBox
 from .TestForm import TestForm
 from .QueuePanel import QueuePanel
 from .ResultPanel import ResultPanel

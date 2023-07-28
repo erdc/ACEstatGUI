@@ -24,12 +24,12 @@ from PyQt5.QtCore import QEvent, pyqtSignal as Signal
 from PyQt5.QtWidgets import (
     QWidget, QFrame, QComboBox, QLabel, QRadioButton, QPushButton, QSpinBox,
     QScrollArea, QGridLayout, QVBoxLayout, QHBoxLayout, QSizePolicy, QCheckBox,
-    QStackedWidget, QFileDialog
+    QStackedWidget, QFileDialog, QDoubleSpinBox
 )
 
 
 # Local
-from . import ElideLabel, FuncComboBox, GroupComboBox
+from . import ElideLabel, FuncComboBox, GroupComboBox, NumberSpinBox
 
 
 class TestParameter(QWidget):
@@ -44,6 +44,20 @@ class TestParameter(QWidget):
         if param.type == "int":
             self.input = QSpinBox()
             self.input.setRange(param.min, param.max)
+            self.input.valueChanged.connect(self.valueChanged)
+        elif param.type == "float":
+            self.input = QDoubleSpinBox()
+            self.input.setRange(param.min, param.max)
+            self.input.setDecimals(param.precision)
+            self.input.valueChanged.connect(self.valueChanged)
+        elif param.type == "number":
+            self.input = NumberSpinBox()
+            self.input.setRange(param.min, param.max)
+            self.input.setDecimals(param.precision)
+            if param.float_min:
+                self.input.setFloatMin(param.float_min)
+            if param.float_max:
+                self.input.setFloatMax(param.float_max)
             self.input.valueChanged.connect(self.valueChanged)
         elif param.type == "select":
             self.input = QComboBox()
@@ -64,13 +78,15 @@ class TestParameter(QWidget):
     def setValue(self, value):
         if isinstance(self.input, QSpinBox):
             self.input.setValue(int(value))
+        elif isinstance(self.input, QDoubleSpinBox):
+            self.input.setValue(float(value))
         elif isinstance(self.input, QComboBox):
             self.input.setCurrentText(self.param.options[value])
 
     def getValue(self):
         value = None
         # Check widget type
-        if isinstance(self.input, QSpinBox):
+        if isinstance(self.input, (QSpinBox, QDoubleSpinBox)):
             value = str(self.input.value())
         elif isinstance(self.input, QComboBox):
             value = list(self.param.options.keys())[self.input.currentIndex()]
@@ -101,6 +117,9 @@ class TestPanel(QWidget):
             presets.setCurrentIndex(-1)
 
         for id in self.test.parameters:
+            # Ignore static parameters
+            if self.test.parameters[id].type == "static":
+                continue
             p = self.test.parameters[id]
             layout.addWidget(QLabel("{0}:".format(p.name)), layout.rowCount(), 0)
             self.parameters[id] = TestParameter(p)

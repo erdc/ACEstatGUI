@@ -18,10 +18,13 @@ from PyQt5.QtWidgets import (
     QWidget, QFrame, QLabel, QPushButton, QScrollArea, QGridLayout, QVBoxLayout,
     QHBoxLayout, QSizePolicy, QGridLayout, QMenu, QFileDialog
 )
+from os import path as _path
 from datetime import datetime
 # Local
 from Widgets import CollapsibleBox, ElideLabel
 
+
+LASTDIR = None
 
 class ResultItem(QWidget):
     sigPlot = Signal(str, object)
@@ -132,10 +135,19 @@ class ResultItem(QWidget):
         savePreset = menu.addAction("Save as Preset")
         action = menu.exec_(self.mapToGlobal(event.pos()))
         if action == saveResults:
-            path = QFileDialog.getExistingDirectory(
-                self, "Choose Directory")
-            if path:
-                self.test.export(path)
+            global LASTDIR
+            filepath = self.test.generateFilename()
+            if LASTDIR:
+                filepath = _path.join(LASTDIR, filepath)
+            path = QFileDialog.getSaveFileName(
+                self, "Save Results", filepath, filter="CSV (*.CSV)")
+            if path[0]:
+                LASTDIR = _path.split(path[0])[0]
+                self.test.export(path[0])
+            # path = QFileDialog.getExistingDirectory(
+            #     self, "Choose Directory")
+            # if path:
+            #     self.test.export(path)
         elif action == savePreset:
             path = QFileDialog.getSaveFileName(
                 self, "Save Preset", filter="JSON (*.json)")

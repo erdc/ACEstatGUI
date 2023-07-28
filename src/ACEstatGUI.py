@@ -40,7 +40,7 @@ QDir.addSearchPath('light', resource_path("icons", "light"))
 # import random
 
 # Global Variables
-DEFAULT_BAUD = 9600
+DEFAULT_BAUD = 115200
 CONFIGFILE = 'config.ini'
 CONFIG = LoadConfig(CONFIGFILE)
 
@@ -247,9 +247,9 @@ class ACEstatGUI(QMainWindow):
 
             self.rDisplay = ResultTable([
                 f"{f.label}{f' ({f.units})' if hasattr(f, 'units') else ''}"
-                for f in info.fields], list(zip(*reversed([
+                for f in info.fields], list(zip(*[
                     test.results[id][f.label] for f in info.fields
-                ]))), self)
+                ])), self)
             pltLayout.addWidget(self.rDisplay)
             pltLayout.update()
             self.rDisplay.setEnabled(True)
