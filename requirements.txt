@@ -1,4 +1,4 @@
-#acestatpy==2023.7.5.1 # Must be installed from file
+#acestatpy==2023.8.1.1 # Must be installed from file
 matplotlib==3.5.1
 PyQt5==5.15.6
 pyqtgraph==0.12.3
